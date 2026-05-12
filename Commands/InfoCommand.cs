@@ -63,7 +63,7 @@ internal class InfoCommand : ICommand {
 		sb.Append($"\n  {Localization.Localize(CarbsArg, Utils.DoubleToString(product.Carbs))}");
 		sb.Append($"\n  {Localization.Localize(CaloriesArg, Utils.DoubleToString(product.Calories), Utils.DoubleToString(product.CaloriesKj))}");
 		sb.Append($"\n  {Localization.Localize(SaltArg, Utils.DoubleToString(product.Salt))}");
-		sb.Append($"\n  {Localization.Localize(TimestampArg, product.LastUpdated)}");
+		sb.Append($"\n  {Localization.Localize(TimestampArg, Utils.DateToStr(product.LastUpdated))}");
 
 		return sb.ToString();
 	}
