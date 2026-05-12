@@ -2,6 +2,41 @@
 
 internal class StatusCommand : ICommand {
 
+	public string Key => "status";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
+
+	public string? Run(string[] args) {
+		var sb = new StringBuilder();
+		sb.Append(Localization.Localize(CaptionArg));
+
+		string fPath = File.Exists(SQLiteDatabase.FileName) ? Path.GetFullPath(SQLiteDatabase.FileName) : Localization.Localize(NotExistsArg);
+		sb.Append($"\n  {Localization.Localize(FileArg, fPath)}");
+
+		if (File.Exists(SQLiteDatabase.FileName)) {
+			var fileInfo = new FileInfo(SQLiteDatabase.FileName);
+			sb.Append($"\n  {Localization.Localize(SizeArg, Utils.FormatFileSize(fileInfo.Length))}");
+			sb.Append($"\n  {Localization.Localize(ModifiedArg, Utils.DateToStr(fileInfo.LastWriteTime))}");
+		}
+
+		var stats = Program.Database.GetDatabaseStats();
+		sb.Append($"\n  {Localization.Localize(TotalArg, stats.ProductCount)}");
+
+		if (stats.ProductCount > 0 && !string.IsNullOrEmpty(stats.OldestProduct) && !string.IsNullOrEmpty(stats.NewestProduct)) {
+			sb.Append($"\n  {Localization.Localize(TotalArg, stats.OldestProduct)}");
+			sb.Append($"\n  {Localization.Localize(TotalArg, stats.NewestProduct)}");
+		}
+
+		if (stats.IsValid)
+			sb.Append($"\n  {Localization.Localize(OkArg)}");
+		else
+			sb.Append($"\n  {Localization.Localize(ErrorArg, stats.ErrorMessage)}");
+
+		return sb.ToString();
+	}
+
+	#region Localization
+
 	private const string HelpCommandArg = "status-help";
 	private const string DetailedHelpCommandArg = "status-detailed";
 
@@ -32,44 +67,5 @@ internal class StatusCommand : ICommand {
 		dict.Add(ErrorArg, "Database Status: Error - {0}");
 	}
 
-	public string GetKey() {
-		return "status";
-	}
-
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
-
-	public string? Run(string[] args) {
-		var sb = new StringBuilder();
-		sb.Append(Localization.Localize(CaptionArg));
-
-		string fPath = File.Exists(SQLiteDatabase.FileName) ? Path.GetFullPath(SQLiteDatabase.FileName) : Localization.Localize(NotExistsArg);
-		sb.Append($"\n  {Localization.Localize(FileArg, fPath)}");
-
-		if (File.Exists(SQLiteDatabase.FileName)) {
-			var fileInfo = new FileInfo(SQLiteDatabase.FileName);
-			sb.Append($"\n  {Localization.Localize(SizeArg, Utils.FormatFileSize(fileInfo.Length))}");
-			sb.Append($"\n  {Localization.Localize(ModifiedArg, Utils.DateToStr(fileInfo.LastWriteTime))}");
-		}
-
-		var stats = Program.Database.GetDatabaseStats();
-		sb.Append($"\n  {Localization.Localize(TotalArg, stats.ProductCount)}");
-
-		if (stats.ProductCount > 0 && !string.IsNullOrEmpty(stats.OldestProduct) && !string.IsNullOrEmpty(stats.NewestProduct)) {
-			sb.Append($"\n  {Localization.Localize(TotalArg, stats.OldestProduct)}");
-			sb.Append($"\n  {Localization.Localize(TotalArg, stats.NewestProduct)}");
-		}
-
-		if (stats.IsValid)
-			sb.Append($"\n  {Localization.Localize(OkArg)}");
-		else
-			sb.Append($"\n  {Localization.Localize(ErrorArg, stats.ErrorMessage)}");
-
-		return sb.ToString();
-	}
+	#endregion
 }

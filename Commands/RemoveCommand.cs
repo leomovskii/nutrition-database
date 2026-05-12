@@ -1,5 +1,25 @@
 ﻿internal class RemoveCommand : ICommand {
 
+	public string Key => "remove";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
+
+	public string? Run(string[] args) {
+		if (args.Length < 2)
+			return Localization.Localize(UsageArg, Program.RootCommand);
+
+		if (!int.TryParse(args[1], out int productId))
+			return Localization.Localize(InvalidIdArg, args[1]);
+
+		if (!Program.Database.TryFindProductById(productId, out _))
+			return Localization.Localize(ProductNotFoundArg, productId);
+
+		int result = Program.Database.DeleteProduct(productId);
+		return Localization.Localize(result > 0 ? RemovedArg : FailedArg);
+	}
+
+	#region Localization
+
 	private const string HelpCommandArg = "remove-help";
 	private const string DetailedHelpCommandArg = "remove-detailed";
 	private const string UsageArg = "remove-usage";
@@ -18,29 +38,5 @@
 		dict.Add(FailedArg, "Failed to remove product.");
 	}
 
-	public string GetKey() {
-		return "remove";
-	}
-
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
-
-	public string? Run(string[] args) {
-		if (args.Length < 2)
-			return Localization.Localize(UsageArg, Program.RootCommand);
-
-		if (!int.TryParse(args[1], out int productId))
-			return Localization.Localize(InvalidIdArg, args[1]);
-
-		if (!Program.Database.TryFindProductById(productId, out _))
-			return Localization.Localize(ProductNotFoundArg, productId);
-
-		int result = Program.Database.DeleteProduct(productId);
-		return Localization.Localize(result > 0 ? RemovedArg : FailedArg);
-	}
+	#endregion
 }

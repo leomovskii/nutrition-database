@@ -1,26 +1,8 @@
 ﻿internal class FileCommand : ICommand {
 
-	private const string HelpCommandArg = "file-help";
-	private const string DetailedHelpCommandArg = "file-detailed";
-	private const string FileNotFoundArg = "file-not-found";
-
-	public static void FillLocalization(Dictionary<string, string> dict) {
-		dict.Add(HelpCommandArg, "Open database file location.");
-		dict.Add(DetailedHelpCommandArg, "");
-		dict.Add(FileNotFoundArg, "Database file not found on path '{dbPath}'.");
-	}
-
-	public string GetKey() {
-		return "file";
-	}
-
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
+	public string Key => "file";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
 
 	public string? Run(string[] _) {
 		string dbPath = Path.GetFullPath(SQLiteDatabase.FileName);
@@ -54,4 +36,18 @@
 			return e.Message;
 		}
 	}
+
+	#region Localization
+
+	private const string HelpCommandArg = "file-help";
+	private const string DetailedHelpCommandArg = "file-detailed";
+	private const string FileNotFoundArg = "file-not-found";
+
+	public static void FillLocalization(Dictionary<string, string> dict) {
+		dict.Add(HelpCommandArg, "Open database file location.");
+		dict.Add(DetailedHelpCommandArg, "");
+		dict.Add(FileNotFoundArg, "Database file not found on path '{dbPath}'.");
+	}
+
+	#endregion
 }

@@ -1,5 +1,25 @@
 ﻿internal class AddCommand : ICommand {
 
+	public string Key => "add";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
+
+	public string? Run(string[] args) {
+		if (args.Length == 1)
+			return Localization.Localize(UsageArg, Program.RootCommand);
+
+		var product = ProductInfo.ParseFromArgs(args[1..]);
+
+		if (string.IsNullOrWhiteSpace(product.Title))
+			return Localization.Localize(TitleRequiredArg);
+
+		int result = Program.Database.AddOrUpdateProduct(product);
+
+		return Localization.Localize(result > 0 ? AddedArg : FailedArg);
+	}
+
+	#region Localization
+
 	private const string HelpCommandArg = "add-help";
 	private const string DetailedHelpCommandArg = "add-detailed";
 	private const string UsageArg = "add-usage";
@@ -16,29 +36,5 @@
 		dict.Add(FailedArg, "Failed to add product.");
 	}
 
-	public string GetKey() {
-		return "add";
-	}
-
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
-
-	public string? Run(string[] args) {
-		if (args.Length == 1)
-			return Localization.Localize(UsageArg, Program.RootCommand);
-
-		var product = ProductInfo.ParseFromArgs(args[1..]);
-
-		if (string.IsNullOrWhiteSpace(product.Title))
-			return Localization.Localize(TitleRequiredArg);
-
-		int result = Program.Database.AddOrUpdateProduct(product);
-
-		return Localization.Localize(result > 0 ? AddedArg : FailedArg);
-	}
+	#endregion
 }

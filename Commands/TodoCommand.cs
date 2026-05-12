@@ -2,24 +2,9 @@
 
 internal class TodoCommand : ICommand {
 
-	private const string HelpCommandArg = "todo-help";
-	private const string DetailedHelpCommandArg = "todo-detailed";
-
-	public static void FillLocalization(Dictionary<string, string> dict) {
-		dict.Add(HelpCommandArg, "Upcoming features list.");
-		dict.Add(DetailedHelpCommandArg, "");
-	}
-	public string GetKey() {
-		return "todo";
-	}
-
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
+	public string Key => "todo";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
 
 	public string? Run(string[] args) {
 		var sb = new StringBuilder();
@@ -30,4 +15,16 @@ internal class TodoCommand : ICommand {
 		sb.Append("\n* Languages: add ukrainian, deutsch, français, español, italiano, čeština.");
 		return sb.ToString();
 	}
+
+	#region Localization
+
+	private const string HelpCommandArg = "todo-help";
+	private const string DetailedHelpCommandArg = "todo-detailed";
+
+	public static void FillLocalization(Dictionary<string, string> dict) {
+		dict.Add(HelpCommandArg, "Upcoming features list.");
+		dict.Add(DetailedHelpCommandArg, "");
+	}
+
+	#endregion
 }

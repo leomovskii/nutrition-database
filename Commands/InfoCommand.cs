@@ -2,6 +2,35 @@
 
 internal class InfoCommand : ICommand {
 
+	public string Key => "info";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
+
+	public string? Run(string[] args) {
+		if (args.Length < 2)
+			return Localization.Localize(UsageArg, Program.RootCommand);
+
+		if (!int.TryParse(args[1], out int productId))
+			return Localization.Localize(InvalidIdArg, args[1]);
+
+		if (!Program.Database.TryFindProductById(productId, out var product))
+			return Localization.Localize(ProductNotFoundArg, productId);
+
+		var sb = new StringBuilder();
+		sb.Append(Localization.Localize(MessageArg, productId));
+		sb.Append($"\n  {Localization.Localize(TitleArg, product.Title)}");
+		sb.Append($"\n  {Localization.Localize(ProteinsArg, Utils.DoubleToString(product.Proteins))}");
+		sb.Append($"\n  {Localization.Localize(FatsArg, Utils.DoubleToString(product.Fats))}");
+		sb.Append($"\n  {Localization.Localize(CarbsArg, Utils.DoubleToString(product.Carbs))}");
+		sb.Append($"\n  {Localization.Localize(CaloriesArg, Utils.DoubleToString(product.Calories), Utils.DoubleToString(product.CaloriesKj))}");
+		sb.Append($"\n  {Localization.Localize(SaltArg, Utils.DoubleToString(product.Salt))}");
+		sb.Append($"\n  {Localization.Localize(TimestampArg, Utils.DateToStr(product.LastUpdated))}");
+
+		return sb.ToString();
+	}
+
+	#region Localization
+
 	private const string HelpCommandArg = "info-help";
 	private const string DetailedHelpCommandArg = "info-detailed";
 	private const string UsageArg = "info-usage";
@@ -33,38 +62,6 @@ internal class InfoCommand : ICommand {
 		dict.Add(SaltArg, "Salt: {0} g");
 		dict.Add(TimestampArg, "Last Updated: {0}");
 	}
-	public string GetKey() {
-		return "info";
-	}
 
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
-
-	public string? Run(string[] args) {
-		if (args.Length < 2)
-			return Localization.Localize(UsageArg, Program.RootCommand);
-
-		if (!int.TryParse(args[1], out int productId))
-			return Localization.Localize(InvalidIdArg, args[1]);
-
-		if (!Program.Database.TryFindProductById(productId, out var product))
-			return Localization.Localize(ProductNotFoundArg, productId);
-
-		var sb = new StringBuilder();
-		sb.Append(Localization.Localize(MessageArg, productId));
-		sb.Append($"\n  {Localization.Localize(TitleArg, product.Title)}");
-		sb.Append($"\n  {Localization.Localize(ProteinsArg, Utils.DoubleToString(product.Proteins))}");
-		sb.Append($"\n  {Localization.Localize(FatsArg, Utils.DoubleToString(product.Fats))}");
-		sb.Append($"\n  {Localization.Localize(CarbsArg, Utils.DoubleToString(product.Carbs))}");
-		sb.Append($"\n  {Localization.Localize(CaloriesArg, Utils.DoubleToString(product.Calories), Utils.DoubleToString(product.CaloriesKj))}");
-		sb.Append($"\n  {Localization.Localize(SaltArg, Utils.DoubleToString(product.Salt))}");
-		sb.Append($"\n  {Localization.Localize(TimestampArg, Utils.DateToStr(product.LastUpdated))}");
-
-		return sb.ToString();
-	}
+	#endregion
 }

@@ -1,34 +1,8 @@
 ﻿internal class UpdateCommand : ICommand {
 
-	private const string HelpCommandArg = "update-help";
-	private const string DetailedHelpCommandArg = "update-detailed";
-	private const string UsageArg = "update-usage";
-	private const string InvalidIdArg = "update-invalid-id";
-	private const string ProductNotFoundArg = "update-product-not-found";
-	private const string SuccessArg = "update-success";
-	private const string FailArg = "update-fail";
-
-	public static void FillLocalization(Dictionary<string, string> dict) {
-		dict.Add(HelpCommandArg, "Update product.");
-		dict.Add(DetailedHelpCommandArg, "");
-		dict.Add(UsageArg, "Not enough arguments. Use [{0} update id -t:\"product name\" -p:num ...]");
-		dict.Add(InvalidIdArg, "Invalid product ID: {0}");
-		dict.Add(ProductNotFoundArg, "Product with ID {0} not found.");
-		dict.Add(SuccessArg, "Product updated successfully.");
-		dict.Add(FailArg, "Failed to update product.");
-	}
-
-	public string GetKey() {
-		return "update";
-	}
-
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
+	public string Key => "update";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
 
 	public string? Run(string[] args) {
 		if (args.Length < 2)
@@ -58,4 +32,26 @@
 		int result = Program.Database.AddOrUpdateProduct(existingProduct);
 		return Localization.Localize(result > 0 ? SuccessArg : FailArg);
 	}
+
+	#region Localization
+
+	private const string HelpCommandArg = "update-help";
+	private const string DetailedHelpCommandArg = "update-detailed";
+	private const string UsageArg = "update-usage";
+	private const string InvalidIdArg = "update-invalid-id";
+	private const string ProductNotFoundArg = "update-product-not-found";
+	private const string SuccessArg = "update-success";
+	private const string FailArg = "update-fail";
+
+	public static void FillLocalization(Dictionary<string, string> dict) {
+		dict.Add(HelpCommandArg, "Update product.");
+		dict.Add(DetailedHelpCommandArg, "");
+		dict.Add(UsageArg, "Not enough arguments. Use [{0} update id -t:\"product name\" -p:num ...]");
+		dict.Add(InvalidIdArg, "Invalid product ID: {0}");
+		dict.Add(ProductNotFoundArg, "Product with ID {0} not found.");
+		dict.Add(SuccessArg, "Product updated successfully.");
+		dict.Add(FailArg, "Failed to update product.");
+	}
+
+	#endregion
 }

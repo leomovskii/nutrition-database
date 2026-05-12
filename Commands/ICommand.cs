@@ -1,6 +1,6 @@
 ﻿internal interface ICommand {
-	string GetKey();
-	string GetHelp();
-	string? GetDetailedHelp();
+	string Key { get; }
+	string Help { get; }
+	string? DetailedHelp { get; }
 	string? Run(string[] args);
 }

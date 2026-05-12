@@ -2,32 +2,9 @@
 
 internal class FindCommand : ICommand {
 
-	private const string HelpCommandArg = "find-help";
-	private const string DetailedHelpCommandArg = "find-detailed";
-	private const string UsageArg = "find-usage";
-	private const string ProductNotFoundArg = "find-product-not-find";
-	private const string FoundArg = "find-found";
-	private const string AndMoreArg = "find-and-more";
-
-	public static void FillLocalization(Dictionary<string, string> dict) {
-		dict.Add(HelpCommandArg, "Find product(s) by title.");
-		dict.Add(DetailedHelpCommandArg, "");
-		dict.Add(UsageArg, "Not enough arguments. Use [{0} find product name]");
-		dict.Add(ProductNotFoundArg, "Product not found.");
-		dict.Add(FoundArg, "Found {0} product(s):");
-		dict.Add(AndMoreArg, "... and {0} more.");
-	}
-	public string GetKey() {
-		return "find";
-	}
-
-	public string GetHelp() {
-		return Localization.Localize(HelpCommandArg);
-	}
-
-	public string? GetDetailedHelp() {
-		return Localization.Localize(DetailedHelpCommandArg);
-	}
+	public string Key => "find";
+	public string Help => Localization.Localize(HelpCommandArg);
+	public string? DetailedHelp => Localization.Localize(DetailedHelpCommandArg);
 
 	public string? Run(string[] args) {
 		if (args.Length == 1)
@@ -50,4 +27,24 @@ internal class FindCommand : ICommand {
 
 		return sb.ToString();
 	}
+
+	#region Localization
+
+	private const string HelpCommandArg = "find-help";
+	private const string DetailedHelpCommandArg = "find-detailed";
+	private const string UsageArg = "find-usage";
+	private const string ProductNotFoundArg = "find-product-not-find";
+	private const string FoundArg = "find-found";
+	private const string AndMoreArg = "find-and-more";
+
+	public static void FillLocalization(Dictionary<string, string> dict) {
+		dict.Add(HelpCommandArg, "Find product(s) by title.");
+		dict.Add(DetailedHelpCommandArg, "");
+		dict.Add(UsageArg, "Not enough arguments. Use [{0} find product name]");
+		dict.Add(ProductNotFoundArg, "Product not found.");
+		dict.Add(FoundArg, "Found {0} product(s):");
+		dict.Add(AndMoreArg, "... and {0} more.");
+	}
+
+	#endregion
 }

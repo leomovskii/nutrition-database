@@ -61,12 +61,8 @@ internal class Program {
 		}
 
 		void RegisterCommand(ICommand cmd) {
-			string cmdKey = cmd.GetKey();
-			if (Commands.ContainsKey(cmdKey))
-				return;
-
-			Commands.Add(cmdKey, cmd);
-			sb.Append($"\n  {cmdKey} - {cmdKey}");
+			if (Commands.TryAdd(cmd.Key, cmd))
+				sb.Append($"\n  {cmd.Key} - {cmd.Key}");
 		}
 	}
 
